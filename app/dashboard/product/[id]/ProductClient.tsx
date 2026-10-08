@@ -172,7 +172,13 @@ export default function ProductClient({
   }, [product?.colors, safeImages, selectedVariant?.color]);
   const sizeNames = useMemo(
     () =>
-      Array.from(new Set(variants.map((variant) => variant.size).filter(Boolean))).sort(
+      Array.from(
+        new Set(
+          variants
+            .map((variant) => variant.size)
+            .filter((size): size is string => Boolean(size))
+        )
+      ).sort(
         (a, b) => sizeRank(a) - sizeRank(b)
       ),
     [variants]
