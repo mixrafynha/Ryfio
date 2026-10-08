@@ -10,7 +10,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import TestimonialRotator from "./components/TestimonialRotator";
-import IdeaToIncomeStory from "./components/Home/IdeaToIncomeStory";
 
 const CREATE_HREF = "/dashboard/create";
 const CATALOG_HREF = "/catalog";
@@ -52,6 +51,16 @@ type Product = {
   tag?: string;
   category: string;
   description: string;
+};
+
+type CustomProduct = {
+  title: string;
+  eyebrow: string;
+  description: string;
+  cta: string;
+  href: string;
+  image: string;
+  alt: string;
 };
 
 const FEATURES: readonly Feature[] = Object.freeze([
@@ -102,6 +111,49 @@ const PRODUCTS: readonly Product[] = Object.freeze([
     category: "Lifestyle apparel",
     description: "A relaxed everyday look with a memorable graphic.",
     image: "/create/editorial-park.webp",
+  },
+]);
+
+const CUSTOM_PRODUCTS: readonly CustomProduct[] = Object.freeze([
+  {
+    eyebrow: "Apparel",
+    title: "Custom T-Shirts",
+    description:
+      "Design personalized t-shirts with text, photos, logos or artwork for yourself, your brand or your next drop.",
+    cta: "Create Custom T-Shirts",
+    href: "/custom-t-shirts",
+    image: "/custom-products/custom-t-shirts.webp",
+    alt: "Custom t-shirt with personalized graphic design",
+  },
+  {
+    eyebrow: "Apparel",
+    title: "Hoodies & Sweatshirts",
+    description:
+      "Create custom hoodies and sweatshirts with your own artwork, logo or text, ready to wear, gift or sell online.",
+    cta: "Create Custom Hoodies",
+    href: "/custom-hoodies",
+    image: "/custom-products/custom-sweatshirts.webp",
+    alt: "Custom hoodie and sweatshirt with personalized printed design",
+  },
+  {
+    eyebrow: "Drinkware",
+    title: "Custom Mugs",
+    description:
+      "Make personalized mugs with photos, text, artwork or AI-generated designs for gifts, collections or stores.",
+    cta: "Create Custom Mugs",
+    href: "/custom-mugs",
+    image: "/custom-products/custom-mugs.webp",
+    alt: "Personalized custom mugs with printed designs",
+  },
+  {
+    eyebrow: "Accessories",
+    title: "Custom Tote Bags",
+    description:
+      "Design custom tote bags with your logo, illustration, text or graphics for everyday use and branded merch.",
+    cta: "Create Custom Tote Bags",
+    href: "/custom-tote-bags",
+    image: "/custom-products/custom-tote-bags.webp",
+    alt: "Custom tote bags with personalized printed artwork",
   },
 ]);
 
@@ -159,6 +211,115 @@ const ProductCard = memo(function ProductCard({
     </Link>
   );
 });
+
+const CustomProductCard = memo(function CustomProductCard({
+  product,
+  priority,
+}: {
+  product: CustomProduct;
+  priority: boolean;
+}) {
+  return (
+    <article className="group relative h-[504px] min-w-[86vw] overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] shadow-[0_24px_70px_rgba(0,0,0,0.3)] transition duration-700 hover:-translate-y-1 hover:border-fuchsia-300/35 hover:shadow-[0_34px_90px_rgba(168,85,247,0.2)] sm:h-[612px] sm:min-w-[52vw] lg:h-[648px] lg:min-w-0 xl:h-[684px]">
+      <Image
+        src={product.image}
+        alt={safeText(product.alt)}
+        fill
+        sizes="(max-width: 640px) 82vw, (max-width: 1024px) 48vw, 25vw"
+        className="object-cover transition duration-[1400ms] ease-out group-hover:scale-105"
+        priority={priority}
+      />
+
+      <div className="absolute inset-0 bg-gradient-to-t from-[#05030a] via-[#05030a]/58 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-6">
+        <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-fuchsia-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.75)]">
+          {safeText(product.eyebrow)}
+        </p>
+        <h3 className="mb-2 text-2xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_3px_14px_rgba(0,0,0,0.8)] sm:text-3xl">
+          {safeText(product.title)}
+        </h3>
+        <p className="max-w-[28rem] pr-12 text-sm font-semibold leading-relaxed text-white/90 drop-shadow-[0_2px_10px_rgba(0,0,0,0.75)]">
+          {safeText(product.description)}
+        </p>
+        <Link
+          href={safeHref(product.href)}
+          aria-label={safeText(product.cta)}
+          className="absolute bottom-5 right-5 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-black/35 text-white shadow-[0_12px_30px_rgba(0,0,0,0.35)] backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/16 focus:outline-none focus:ring-2 focus:ring-fuchsia-300 focus:ring-offset-2 focus:ring-offset-[#100a18] sm:bottom-6 sm:right-6"
+        >
+          <ArrowUpRight size={18} aria-hidden="true" />
+        </Link>
+      </div>
+    </article>
+  );
+});
+
+function CustomProductsShowcase() {
+  return (
+    <section className="relative overflow-hidden bg-[#110b1a] pb-16 pt-24 text-white sm:pb-24 sm:pt-28">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_-6%_86%,rgba(124,58,237,0.28),transparent_25%),radial-gradient(circle_at_104%_70%,rgba(168,85,247,0.28),transparent_24%),linear-gradient(180deg,#130d1d_0%,#0e0916_100%)]" />
+      <div className="pointer-events-none absolute left-0 right-0 top-0 h-24 overflow-hidden">
+        <svg
+          className="absolute left-1/2 top-0 h-24 w-[120vw] -translate-x-1/2"
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M0 28 C 185 82 305 4 488 42 C 675 82 792 52 945 31 C 1110 8 1274 64 1440 29"
+            fill="none"
+            stroke="url(#customProductsWave)"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <path
+            d="M0 28 C 185 82 305 4 488 42 C 675 82 792 52 945 31 C 1110 8 1274 64 1440 29"
+            fill="none"
+            stroke="rgba(217,70,239,0.36)"
+            strokeWidth="14"
+            strokeLinecap="round"
+            filter="blur(12px)"
+          />
+          <defs>
+            <linearGradient id="customProductsWave" x1="0" x2="1440" y1="0" y2="0">
+              <stop stopColor="#a855f7" />
+              <stop offset="0.5" stopColor="#f0abfc" />
+              <stop offset="1" stopColor="#2563eb" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div className="relative mx-auto max-w-none px-4 md:px-8 lg:px-6">
+        <div className="mx-auto mb-7 grid max-w-5xl items-end gap-5 text-center sm:mb-8">
+          <div>
+            <h2
+              aria-label="Custom products you can create"
+              className="mx-auto max-w-full font-[var(--font-logo)] text-[20px] font-normal uppercase leading-[0.95] tracking-[0] text-white min-[390px]:text-[21px] sm:max-w-4xl sm:text-[42px] lg:text-[46px] xl:text-[52px]"
+              style={{ fontFamily: "var(--font-logo)" }}
+            >
+              <span className="block whitespace-nowrap">Custom products you can</span>
+              <span className="block bg-gradient-to-r from-fuchsia-400 to-purple-400 bg-clip-text text-transparent">
+                create
+              </span>
+            </h2>
+          </div>
+          <p className="mx-auto max-w-md text-xs font-medium leading-relaxed text-white/58 sm:text-sm lg:max-w-none lg:whitespace-nowrap lg:text-base">
+            Design t-shirts, hoodies, sweatshirts, mugs and tote bags with your artwork, text or AI-generated graphics.
+          </p>
+        </div>
+
+        <div className="flex gap-4 overflow-x-auto pb-4 [scrollbar-width:none] sm:gap-5 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden">
+          {CUSTOM_PRODUCTS.map((product, index) => (
+            <CustomProductCard
+              key={product.title}
+              product={product}
+              priority={index === 0}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -239,10 +400,42 @@ export default function HomePage() {
 
 </section>
 
-      <section className="relative mt-0 bg-[#1d1726] py-0">
+      <section className="relative mt-0 overflow-hidden bg-[#1d1726] py-0">
+        <div className="pointer-events-none absolute left-0 right-0 top-0 h-24 overflow-hidden">
+          <svg
+            className="absolute left-1/2 top-0 h-24 w-[120vw] -translate-x-1/2"
+            viewBox="0 0 1440 120"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M0 28 C 185 82 305 4 488 42 C 675 82 792 52 945 31 C 1110 8 1274 64 1440 29"
+              fill="none"
+              stroke="url(#createProductsWave)"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+            <path
+              d="M0 28 C 185 82 305 4 488 42 C 675 82 792 52 945 31 C 1110 8 1274 64 1440 29"
+              fill="none"
+              stroke="rgba(217,70,239,0.36)"
+              strokeWidth="14"
+              strokeLinecap="round"
+              filter="blur(12px)"
+            />
+            <defs>
+              <linearGradient id="createProductsWave" x1="0" x2="1440" y1="0" y2="0">
+                <stop stopColor="#a855f7" />
+                <stop offset="0.5" stopColor="#f0abfc" />
+                <stop offset="1" stopColor="#2563eb" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
         <div className="relative mx-auto w-full max-w-none px-0 lg:px-6">
-          <h2 className="mb-8 whitespace-normal break-words px-4 pt-8 text-center font-[var(--font-logo)] text-3xl font-normal uppercase leading-[0.98] tracking-[-0.025em] text-white sm:text-6xl lg:-translate-y-[20px] lg:whitespace-nowrap lg:px-0 lg:pt-10 lg:text-left" style={{ fontFamily: "var(--font-logo)" }}>
-            See what you can <span className="block text-center bg-gradient-to-r from-fuchsia-400 to-purple-400 bg-clip-text text-transparent sm:inline sm:text-center">create</span>
+          <h2 className="mb-8 px-4 pt-[100px] text-center font-[var(--font-logo)] text-[22px] font-normal uppercase leading-[0.92] tracking-[-0.015em] text-white min-[420px]:text-2xl sm:text-6xl lg:-translate-y-[20px] lg:whitespace-nowrap lg:px-0 lg:pt-[116px]" style={{ fontFamily: "var(--font-logo)" }}>
+            <span className="block whitespace-nowrap">Custom T-Shirt Design</span>
+            <span className="block bg-gradient-to-r from-fuchsia-400 to-purple-400 bg-clip-text text-transparent">Ideas</span>
           </h2>
           <div className="grid w-full grid-cols-2 gap-0 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
             {PRODUCTS.map((product, index) => (
@@ -252,7 +445,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <IdeaToIncomeStory />
+      <CustomProductsShowcase />
 
       <section className="relative overflow-hidden bg-[#1d1726] py-20 text-white sm:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.35),transparent_45%)]" />
