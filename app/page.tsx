@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import TestimonialRotator from "./components/TestimonialRotator";
+import IdeaToIncomeStory from "./components/Home/IdeaToIncomeStory";
 
 const CREATE_HREF = "/dashboard/create";
 const CATALOG_HREF = "/catalog";
@@ -102,13 +103,6 @@ const PRODUCTS: readonly Product[] = Object.freeze([
     description: "A relaxed everyday look with a memorable graphic.",
     image: "/create/editorial-park.webp",
   },
-]);
-
-const CUSTOM_FEATURES = Object.freeze([
-  "Describe your idea",
-  "AI creates the design",
-  "Preview the product",
-  "Order or sell online",
 ]);
 
 const FeatureCard = memo(function FeatureCard({ item }: { item: Feature }) {
@@ -258,63 +252,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[#1d1726] py-14 sm:py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(168,85,247,0.18),transparent_28%),radial-gradient(circle_at_85%_50%,rgba(14,165,233,0.14),transparent_24%)]" />
-
-        <div className="relative mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
-          <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_1fr]">
-            <Link
-              href={safeHref(CATALOG_HREF)}
-              className="relative h-[250px] overflow-hidden rounded-[28px] md:h-[420px]"
-            >
-              <Image
-                src="/1.webp"
-                alt="Customize products"
-                fill
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                className="object-cover object-center opacity-90"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-r from-[#1d1726]/70 via-transparent to-transparent" />
-            </Link>
-
-            <div className="relative p-0 lg:p-8">
-              <div className="mb-4 text-xs font-black uppercase tracking-[0.3em] text-purple-400">
-              From idea to income
-              </div>
-
-              <h2 className="mb-5 text-3xl font-black uppercase leading-[0.94] tracking-tight md:text-6xl lg:whitespace-nowrap">
-                Build a product
-                <span className="block bg-gradient-to-r from-violet-300 via-fuchsia-500 to-cyan-400 bg-clip-text text-transparent lg:inline">
-                  people want
-                </span>
-              </h2>
-
-              <p className="mb-7 max-w-xl text-base leading-relaxed text-white/55 sm:text-lg">
-                No designer, no inventory and no complicated setup. Bring the
-                idea — Ryfio helps you turn it into a product ready to sell.
-              </p>
-
-              <div className="grid gap-3">
-                {CUSTOM_FEATURES.map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.035] p-3"
-                  >
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-500 text-xs font-black text-white">
-                      ✓
-                    </div>
-
-                    <p className="text-sm font-semibold text-white/75 sm:text-base">
-                      {safeText(item)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <IdeaToIncomeStory />
 
       <section className="relative overflow-hidden bg-[#1d1726] py-20 text-white sm:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.35),transparent_45%)]" />

@@ -84,9 +84,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
+        url: "/og-image.webp",
+        width: 1672,
+        height: 941,
         alt: "Ryfio — Create and sell custom products",
       },
     ],
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: defaultTitle,
     description: defaultDescription,
-    images: ["/og-image.png"],
+    images: ["/og-image.webp"],
   },
 
   icons: {

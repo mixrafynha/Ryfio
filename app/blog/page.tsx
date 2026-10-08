@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     url: "https://www.ryfio.com/blog",
     siteName: "Ryfio",
     type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Ryfio Blog" }],
+    images: [{ url: "/og-image.webp", width: 1672, height: 941, alt: "Ryfio Blog" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Print-on-Demand Blog | Ryfio",
     description: "Guides for custom products, ecommerce, AI design, and print-on-demand brands.",
-    images: ["/og-image.png"],
+    images: ["/og-image.webp"],
   },
 };
 

@@ -60,7 +60,7 @@ export default function SizeSelector({
         Variants (Size)
       </p>
 
-      <div className="mt-4 grid grid-cols-[repeat(auto-fit,minmax(42px,1fr))] gap-2">
+      <div className="mt-3 grid grid-cols-[repeat(auto-fit,minmax(34px,1fr))] gap-1.5 sm:mt-4 sm:grid-cols-[repeat(auto-fit,minmax(42px,1fr))] sm:gap-2">
         {sizes.map((v: any, i: number) => {
           const disabled = !isVariantSelectable(v);
           const isActive =
@@ -75,7 +75,7 @@ export default function SizeSelector({
                 if (disabled) return;
                 onChange(v);
               }}
-              className={`grid h-9 min-w-[42px] place-items-center border px-2 text-[11px] font-black tracking-[0.04em] transition ${
+              className={`grid h-7 min-w-[34px] place-items-center border px-1.5 text-[9px] font-black tracking-[0.04em] transition sm:h-9 sm:min-w-[42px] sm:px-2 sm:text-[11px] ${
                 disabled
                   ? "cursor-not-allowed border-white/[0.06] bg-white/[0.03] text-white/25"
                   : isActive

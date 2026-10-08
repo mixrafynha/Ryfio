@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     url: "https://www.ryfio.com/blog/how-to-create-a-hoodie-design",
     siteName: "Ryfio",
     type: "article",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "How to Create a Hoodie Design People Want to Wear" }],
+    images: [{ url: "/og-image.webp", width: 1672, height: 941, alt: "How to Create a Hoodie Design People Want to Wear" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "How to Create a Hoodie Design People Want to Wear | Ryfio",
     description: "A practical guide to hoodie design, placement, scale, contrast, and brand feel for custom apparel.",
-    images: ["/og-image.png"],
+    images: ["/og-image.webp"],
   },
 };
 

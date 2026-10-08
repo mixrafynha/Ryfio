@@ -249,12 +249,12 @@ export default async function ProductPage({
 
   return (
     <main
-      className="min-h-screen overflow-x-hidden bg-[#0f0b14] text-white"
+      className="min-h-screen overflow-x-hidden bg-[#2a2630] text-white"
     >
       <section className="relative min-h-screen bg-transparent">
         {/* HEADER COM A MESMA UX DO NAVBAR, MAS SEM FUNDO DIFERENTE */}
-        <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0f0b14]/95">
-          <div className="relative mx-auto flex max-w-7xl items-center justify-center px-3 py-3 sm:px-5 md:justify-between md:px-6 lg:max-w-none lg:px-12 xl:px-16">
+        <header className="sticky top-0 z-50 border-b border-white/10 bg-[#2a2630]/95">
+          <div className="relative mx-auto flex max-w-7xl items-center justify-start px-3 py-3 sm:px-5 md:justify-between md:px-6 lg:max-w-none lg:px-12 xl:px-16">
             <Link
               href="/"
               className="group overflow-visible select-none shrink-0 text-white transition active:scale-[0.98] md:hover:opacity-90"
@@ -281,7 +281,7 @@ export default async function ProductPage({
           </div>
         </header>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-2.5 pb-5 pt-3 sm:px-4 md:px-6 lg:max-w-none lg:px-12 xl:px-16">
+        <div className="relative z-10 mx-auto max-w-7xl px-[3px] pb-5 pt-3 sm:px-4 md:px-6 lg:max-w-none lg:px-12 xl:px-16">
           <ProductClient product={product} images={product.images} id={id} />
 
           {isAdmin && (

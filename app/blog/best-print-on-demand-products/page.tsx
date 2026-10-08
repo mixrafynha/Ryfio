@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     url: "https://www.ryfio.com/blog/best-print-on-demand-products",
     siteName: "Ryfio",
     type: "article",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Best Print-on-Demand Products to Sell in 2026" }],
+    images: [{ url: "/og-image.webp", width: 1672, height: 941, alt: "Best Print-on-Demand Products to Sell in 2026" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Best Print-on-Demand Products to Sell in 2026 | Ryfio",
     description: "A practical list of products that are easier to position, design, and sell for new print-on-demand brands.",
-    images: ["/og-image.png"],
+    images: ["/og-image.webp"],
   },
 };
 

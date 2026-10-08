@@ -458,7 +458,7 @@ export function ProductRight({
       `}</style>
 
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5 lg:grid lg:grid-cols-2 lg:gap-3 lg:items-start">
-        <div className="space-y-2 text-left lg:col-span-2">
+        <div className="space-y-[5px] text-center lg:col-span-2 lg:space-y-2 lg:text-left">
           <h1
             className="max-w-full overflow-hidden bg-gradient-to-r from-white via-white to-cyan-200 bg-clip-text text-[1.73rem] uppercase leading-[0.92] tracking-[-0.04em] text-transparent sm:text-[2.13rem] lg:text-[2.66rem]"
             style={{ fontFamily: "var(--font-logo)", textWrap: "balance" }}
@@ -466,41 +466,70 @@ export function ProductRight({
             <span className="whitespace-nowrap">{title}</span>
           </h1>
 
-          <p className="max-w-[34rem] text-xs font-semibold uppercase leading-relaxed tracking-[0.09em] text-white/60 sm:text-[13px]">
+          <p className="mx-auto max-w-[34rem] text-xs font-semibold uppercase leading-relaxed tracking-[0.09em] text-white/60 sm:text-[13px] lg:mx-0">
             Premium customizable products made for creators, online brands and RYFIO stores.
           </p>
         </div>
 
-        <div className="w-full border border-white/[0.07] bg-[linear-gradient(180deg,#241a31_0%,#191322_100%)] p-4 sm:p-5 lg:flex lg:h-full lg:w-full lg:flex-col">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0 space-y-2">
-              <div className="text-[1.8rem] font-black tracking-tight text-white sm:text-[2.2rem]">
+        <div className="w-full border border-white/[0.07] bg-[linear-gradient(180deg,#241a31_0%,#191322_100%)] p-3 sm:p-5 lg:flex lg:h-full lg:w-full lg:flex-col">
+          <div className="flex items-center justify-between gap-3 lg:items-start lg:gap-4">
+            <div className="min-w-0 lg:space-y-2">
+              <div className="whitespace-nowrap text-[1.45rem] font-black tracking-tight text-white sm:text-[2.2rem]">
                 €{price.toFixed(2)}
               </div>
 
               {originalPrice && (
-                <div className="text-sm text-white/38 line-through">
+                <div className="hidden text-sm text-white/38 line-through lg:block">
                   €{originalPrice.toFixed(2)}
                 </div>
               )}
 
-              <div className="inline-flex max-w-full items-center gap-1.5 border border-fuchsia-300/24 bg-fuchsia-400/[0.08] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-fuchsia-50">
+              <div className="hidden max-w-full items-center gap-1.5 border border-fuchsia-300/24 bg-fuchsia-400/[0.08] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-fuchsia-50 lg:inline-flex">
                 <span className="text-sm leading-none text-fuchsia-300">+</span>
                 <span className="truncate">{selectedVariantLabel}</span>
               </div>
             </div>
 
-            <div className="min-w-0 text-right">
+            <div className="min-w-0 shrink-0 text-right">
               <div className="text-[9px] font-black uppercase tracking-[0.18em] text-white/44">
                 Available in
               </div>
-              <div className="mt-1 text-sm font-black uppercase tracking-[0.12em] text-white">
+              <div className="mt-0.5 whitespace-nowrap text-xs font-black uppercase tracking-[0.12em] text-white sm:text-sm">
                 20+ countries
+              </div>
+              <div className="mt-2 inline-flex items-center gap-0 border border-white/[0.1] bg-black/10 lg:hidden">
+                <button
+                  type="button"
+                  onClick={decreaseQuantity}
+                  disabled={quantity <= 1 || loading}
+                  aria-label="Decrease quantity"
+                  className="flex h-8 w-8 items-center justify-center text-white transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-35"
+                >
+                  <Minus size={13} />
+                </button>
+
+                <span className="min-w-6 px-1 text-center text-xs font-black text-white">
+                  {quantity}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={increaseQuantity}
+                  disabled={
+                    loading ||
+                    isOutOfStock ||
+                    (typeof stock === "number" && quantity >= stock)
+                  }
+                  aria-label="Increase quantity"
+                  className="flex h-8 w-8 items-center justify-center text-white transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-35"
+                >
+                  <Plus size={13} />
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="mt-5 flex items-center justify-between gap-4">
+          <div className="mt-5 hidden items-center justify-between gap-4 lg:flex">
             <div className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.14em] text-white/52">
               <span
                 className={`inline-flex h-3 w-3 rounded-full ${
@@ -551,9 +580,9 @@ export function ProductRight({
 
         <div className="order-2 border border-white/[0.07] bg-[linear-gradient(180deg,#241a31_0%,#191322_100%)] px-3 py-3 text-white lg:order-0 lg:flex lg:h-full lg:w-full lg:flex-col lg:justify-between">
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-[10px] font-medium text-[#6b7280]">
+            <div className="flex items-center gap-2 text-[10px] font-semibold text-white/52">
               <span>Shipping from</span>
-              <span className="grid h-4 w-4 place-items-center border border-[#cfd4dc] text-[9px] leading-none">
+              <span className="grid h-4 w-4 place-items-center border border-white/45 text-[9px] leading-none text-white/68">
                 i
               </span>
             </div>
@@ -561,7 +590,7 @@ export function ProductRight({
 
           <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] gap-3">
             <div className="relative min-w-0">
-              <div className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#6b7280]">
+              <div className="text-[0.68rem] font-black uppercase tracking-[0.14em] text-white/52">
                 Delivery to
               </div>
 
@@ -576,7 +605,7 @@ export function ProductRight({
                   event.stopPropagation();
                   setShippingMenuOpen((prev) => !prev);
                 }}
-                className="mt-1 flex h-10 w-full items-center justify-between gap-2 border border-white/[0.16] bg-[#0f0b14] px-3 text-left text-sm font-semibold text-white transition hover:border-fuchsia-300/40"
+                className="mt-1 flex h-10 w-full items-center justify-between gap-2 border border-white/[0.2] bg-[#0f0b14] px-3 text-left text-sm font-black text-white transition hover:border-fuchsia-300/40"
               >
                 <span className="flex min-w-0 items-center gap-2">
                   <span className="text-base leading-none">
@@ -586,7 +615,7 @@ export function ProductRight({
                     {selectedShippingCountry?.country ?? "Portugal"}
                   </span>
                 </span>
-                <ChevronDown size={15} className="shrink-0 text-[#6b7280]" />
+                <ChevronDown size={15} className="shrink-0 text-white/55" />
               </button>
 
               {shippingMenuOpen && (
@@ -622,13 +651,13 @@ export function ProductRight({
             </div>
 
             <div className="min-w-0 text-right">
-              <div className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#6b7280]">
+              <div className="text-[0.68rem] font-black uppercase tracking-[0.14em] text-white/52">
                 {shippingLoading ? "Calculating" : shippingMethodLabel}
               </div>
-              <div className="mt-1 text-[1.45rem] font-black leading-none tracking-[-0.04em] text-white">
+              <div className="mt-1 text-[1.55rem] font-black leading-none tracking-[-0.04em] text-white">
                 {shippingLoading ? "…" : formatShippingPrice(shippingPrice)}
               </div>
-              <div className="mt-1 text-[10px] font-medium text-[#6b7280]">
+              <div className="mt-1 text-[10px] font-semibold text-white/46">
                 {shippingLoading ? "Please wait" : shippingEta ?? "Estimated at checkout"}
               </div>
             </div>
@@ -636,19 +665,19 @@ export function ProductRight({
 
           <div className="mt-3 border-t border-white/[0.14] pt-3 text-xs font-black uppercase tracking-[0.14em] text-white/65">
             {availabilityChecking ? (
-              <span className="inline-flex items-center gap-1.5 text-[#6b7280]">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-[#6b7280]" />
+              <span className="inline-flex items-center gap-1.5 text-white/58">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-white/58" />
                 CHECKING...
               </span>
             ) : availabilityStatus === "available" ? (
-                <span className="inline-flex items-center gap-2 text-sm text-emerald-400">
+                <span className="inline-flex items-center gap-2 text-sm font-black text-emerald-300">
                   <Check size={15} />
                 AVAILABLE
               </span>
             ) : availabilityStatus === "unavailable" ? (
               <span className="text-[#d94660]">UNAVAILABLE</span>
             ) : (
-              <span className="text-[#6b7280]">UNABLE TO VERIFY</span>
+              <span className="text-white/58">UNABLE TO VERIFY</span>
             )}
           </div>
         </div>

@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     url: "https://www.ryfio.com/blog/print-on-demand-vs-dropshipping",
     siteName: "Ryfio",
     type: "article",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Print on Demand vs Dropshipping: Which Is Better?" }],
+    images: [{ url: "/og-image.webp", width: 1672, height: 941, alt: "Print on Demand vs Dropshipping: Which Is Better?" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Print on Demand vs Dropshipping: Which Is Better? | Ryfio",
     description: "Compare print on demand and dropshipping so you can choose the best model for apparel, accessories, and creator-led ecommerce.",
-    images: ["/og-image.png"],
+    images: ["/og-image.webp"],
   },
 };
 

@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     url: "https://www.ryfio.com/blog/ai-product-design-guide",
     siteName: "Ryfio",
     type: "article",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "AI Product Design: How to Turn Ideas Into Sellable Products" }],
+    images: [{ url: "/og-image.webp", width: 1672, height: 941, alt: "AI Product Design: How to Turn Ideas Into Sellable Products" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "AI Product Design: How to Turn Ideas Into Sellable Products | Ryfio",
     description: "Use AI design tools without creating generic products that look like everything else online.",
-    images: ["/og-image.png"],
+    images: ["/og-image.webp"],
   },
 };
 

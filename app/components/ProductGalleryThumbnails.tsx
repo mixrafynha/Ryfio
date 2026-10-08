@@ -82,7 +82,7 @@ export default function ProductGalleryThumbnails({
   return (
     <div
       ref={scrollRef}
-      className="w-full cursor-grab overflow-x-auto overflow-y-hidden touch-pan-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing"
+      className="w-full cursor-grab overflow-x-auto overflow-y-hidden touch-pan-y [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing sm:touch-pan-x"
       onMouseDown={handleMouseDown}
     >
       <div className="flex w-max min-w-full gap-2.5">

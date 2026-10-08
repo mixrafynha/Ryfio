@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 const PUBLIC_CACHE =
   "public, max-age=30, s-maxage=60, stale-while-revalidate=300";

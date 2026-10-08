@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     url: "https://www.ryfio.com/blog/launch-a-brand-with-no-inventory",
     siteName: "Ryfio",
     type: "article",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "How to Launch a Brand With No Inventory" }],
+    images: [{ url: "/og-image.webp", width: 1672, height: 941, alt: "How to Launch a Brand With No Inventory" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "How to Launch a Brand With No Inventory | Ryfio",
     description: "A lean launch plan for creating a real brand without buying stock, renting storage, or risking money on untested products.",
-    images: ["/og-image.png"],
+    images: ["/og-image.webp"],
   },
 };
 

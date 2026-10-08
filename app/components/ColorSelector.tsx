@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-const VISIBLE_COLOR_COUNT = 9;
+const VISIBLE_COLOR_COUNT = 12;
 
 export default function ColorSelector({
   variants,
@@ -41,7 +41,10 @@ export default function ColorSelector({
   });
 
   const colors = Array.from(colorMap.values());
-  const visibleColors = useMemo(() => colors, [colors]);
+  const visibleColors = useMemo(
+    () => (expanded ? colors : colors.slice(0, VISIBLE_COLOR_COUNT)),
+    [colors, expanded]
+  );
   const hiddenCount = Math.max(0, colors.length - VISIBLE_COLOR_COUNT);
 
   return (
@@ -58,24 +61,21 @@ export default function ColorSelector({
               </span>
             )}
           </div>
-          <p className="mt-3 truncate text-base font-bold text-white lg:hidden">
-            {selectedColor || selectedVariant?.color || "Choose a color"}
-          </p>
         </div>
 
         {hiddenCount > 0 && !expanded && (
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="shrink-0 rounded-full bg-white/[0.05] px-3 py-1 text-sm font-bold tracking-[0.18em] text-white/64 transition hover:bg-white/[0.08] hover:text-white lg:hidden"
-            aria-label="Show all colors"
+            className="shrink-0 rounded-full bg-white/[0.05] px-3 py-1 text-sm font-bold tracking-[0.18em] text-white/64 transition hover:bg-white/[0.08] hover:text-white"
+            aria-label={`Show ${hiddenCount} more colors`}
           >
             ...
           </button>
         )}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-3">
+      <div className="mt-4 grid w-full grid-cols-[repeat(auto-fill,minmax(24px,1fr))] gap-3">
         {visibleColors.map((c: any, i: number) => {
           const normalizedColor = normalize(c.label);
           const available = safeVariants.filter(
@@ -131,6 +131,7 @@ export default function ColorSelector({
             </button>
           );
         })}
+
       </div>
 
       {expanded && hiddenCount > 0 && (
