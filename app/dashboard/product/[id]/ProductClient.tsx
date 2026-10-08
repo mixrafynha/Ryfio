@@ -54,6 +54,7 @@ export default function ProductClient({
   const [variants, setVariants] = useState<Variant[]>([]);
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [detailsReady, setDetailsReady] = useState(false);
 
   const lastSaveRef = useRef(0);
 
@@ -93,6 +94,26 @@ export default function ProductClient({
         null,
     );
   }, [product]);
+
+  useEffect(() => {
+    if (detailsReady) return;
+
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    if (idleWindow.requestIdleCallback) {
+      const id = idleWindow.requestIdleCallback(() => setDetailsReady(true), {
+        timeout: 1200,
+      });
+
+      return () => idleWindow.cancelIdleCallback?.(id);
+    }
+
+    const timeoutId = window.setTimeout(() => setDetailsReady(true), 450);
+    return () => window.clearTimeout(timeoutId);
+  }, [detailsReady]);
 
   const colors = useMemo(() => {
     const uniqueColors = new Map<
@@ -511,6 +532,7 @@ export default function ProductClient({
         </div>
       </div>
 
+      {detailsReady ? (
       <section className="bg-[#2a2630] px-[3px] py-4 text-white [content-visibility:auto] [contain-intrinsic-size:900px] sm:px-5 lg:px-8 lg:py-10 xl:px-12">
         <div className="mx-auto max-w-[1680px] space-y-4 lg:space-y-6">
           <div className="rounded-lg border border-white/[0.1] bg-[#17111f] px-5 py-6 shadow-[0_18px_70px_rgba(0,0,0,0.28)] lg:px-14 lg:py-10">
@@ -588,6 +610,7 @@ export default function ProductClient({
           ))}
         </div>
       </section>
+      ) : null}
     </div>
   );
 }

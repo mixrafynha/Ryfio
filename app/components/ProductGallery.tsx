@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowLeft, ArrowRight, Expand, X } from "lucide-react";
@@ -62,15 +61,13 @@ export default function ProductGallery({
           <span>Full screen</span>
         </button>
 
-        <Image
+        <img
           key={src}
           src={src}
           alt={title?.trim() || "Product image"}
-          fill
-          priority
-          unoptimized
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 42vw"
-          className="translate-y-[5%] scale-[1.1] object-contain object-center sm:translate-y-[6%] sm:scale-[1.13] lg:translate-y-[7%] lg:scale-[1.16]"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 h-full w-full translate-y-[5%] scale-[1.1] object-contain object-center sm:translate-y-[6%] sm:scale-[1.13] lg:translate-y-[7%] lg:scale-[1.16]"
         />
 
         {canNavigate && (
@@ -117,15 +114,12 @@ export default function ProductGallery({
                 className="relative h-full max-h-[92vh] w-full max-w-6xl overflow-hidden bg-white"
                 onClick={(event) => event.stopPropagation()}
               >
-                <Image
+                <img
                   src={src}
                   alt={title?.trim() || "Product image"}
-                  fill
-                  unoptimized
                   loading="lazy"
                   decoding="async"
-                  sizes="100vw"
-                  className="object-contain object-center"
+                  className="absolute inset-0 h-full w-full object-contain object-center"
                 />
               </div>
             </div>

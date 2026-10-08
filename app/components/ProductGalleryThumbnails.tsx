@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 const PLACEHOLDER_IMAGE = "/placeholder.png";
@@ -82,7 +81,7 @@ export default function ProductGalleryThumbnails({
   return (
     <div
       ref={scrollRef}
-      className="w-full cursor-grab overflow-x-auto overflow-y-hidden touch-pan-y [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing sm:touch-pan-x"
+      className="w-full cursor-grab overflow-x-auto overflow-y-hidden touch-auto overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing"
       onMouseDown={handleMouseDown}
     >
       <div className="flex w-max min-w-full gap-2.5">
@@ -111,15 +110,12 @@ export default function ProductGalleryThumbnails({
               }`}
               draggable={false}
             >
-              <Image
+              <img
                 src={thumbnailSrc}
                 alt={`${title?.trim() || "Product"} image ${index + 1}`}
-                fill
-                unoptimized
                 loading="lazy"
                 decoding="async"
-                sizes="(max-width: 640px) 76px, 92px"
-                className="pointer-events-none scale-[1.1] object-contain object-center select-none"
+                className="pointer-events-none h-full w-full scale-[1.1] object-contain object-center select-none"
                 onError={() => onError(image)}
                 draggable={false}
               />
