@@ -6,7 +6,7 @@ const noindexRoutes = ["/admin", "/dashboard", "/settings", "/profile"];
 
 function applySeoHeaders(res: NextResponse, pathname: string) {
   const shouldNoindex = noindexRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname === route || pathname.startsWith(`${route}/`)
   );
 
   if (shouldNoindex) {
@@ -19,6 +19,13 @@ function applySeoHeaders(res: NextResponse, pathname: string) {
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
+  // Public product pages must be accessible to visitors and crawlers
+  // without making an authentication request to Supabase.
+  if (pathname === "/products" || pathname.startsWith("/products/")) {
+    return NextResponse.next();
+  }
+
+  // Preserve the existing product editor behavior and SEO headers.
   if (
     pathname === "/dashboard/design" ||
     pathname.startsWith("/dashboard/design/") ||
@@ -28,9 +35,7 @@ export async function middleware(req: NextRequest) {
     return applySeoHeaders(NextResponse.next(), pathname);
   }
 
-  let res = NextResponse.next({
-    request: req,
-  });
+  let res = NextResponse.next({ request: req });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -40,16 +45,11 @@ export async function middleware(req: NextRequest) {
         getAll() {
           return req.cookies.getAll();
         },
-
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => {
             req.cookies.set(name, value);
           });
-
-          res = NextResponse.next({
-            request: req,
-          });
-
+          res = NextResponse.next({ request: req });
           cookiesToSet.forEach(({ name, value, options }) => {
             res.cookies.set(name, value, options);
           });
@@ -58,40 +58,31 @@ export async function middleware(req: NextRequest) {
     }
   );
 
-let user = null;
-
-try {
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser();
-
-  user = authUser;
-} catch (error: any) {
-  if (error?.code === "refresh_token_not_found") {
-    const cleanRes = NextResponse.redirect(new URL("/login", req.url));
-
-    req.cookies.getAll().forEach((cookie) => {
-      if (cookie.name.includes("supabase") || cookie.name.includes("sb-")) {
-        cleanRes.cookies.delete(cookie.name);
-      }
-    });
-
-    return applySeoHeaders(cleanRes, pathname);
+  let user = null;
+  try {
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    user = authUser;
+  } catch (error: any) {
+    if (error?.code === "refresh_token_not_found") {
+      const cleanRes = NextResponse.redirect(new URL("/login", req.url));
+      req.cookies.getAll().forEach((cookie) => {
+        if (cookie.name.includes("supabase") || cookie.name.includes("sb-")) {
+          cleanRes.cookies.delete(cookie.name);
+        }
+      });
+      return applySeoHeaders(cleanRes, pathname);
+    }
+    throw error;
   }
 
-  throw error;
-}
-
   const protectedRoutes = ["/dashboard", "/admin", "/settings", "/profile"];
-
   const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname === route || pathname.startsWith(`${route}/`)
   );
 
   if (isProtected && !user) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("redirect", pathname + search);
-
     return applySeoHeaders(NextResponse.redirect(loginUrl), pathname);
   }
 
@@ -99,25 +90,17 @@ try {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  if (pathname.startsWith("/admin")) {
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     if (!user) {
-      return applySeoHeaders(
-        NextResponse.redirect(new URL("/login", req.url)),
-        pathname
-      );
+      return applySeoHeaders(NextResponse.redirect(new URL("/login", req.url)), pathname);
     }
-
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
       .maybeSingle();
-
     if (profile?.role !== "admin") {
-      return applySeoHeaders(
-        NextResponse.redirect(new URL("/dashboard", req.url)),
-        pathname
-      );
+      return applySeoHeaders(NextResponse.redirect(new URL("/dashboard", req.url)), pathname);
     }
   }
 
@@ -126,14 +109,7 @@ try {
 
 export const config = {
   matcher: [
-    "/login",
-    "/signup",
-    "/auth/:path*",
-    "/products",
-    "/products/:path*",
-    "/dashboard/:path*",
-    "/admin/:path*",
-    "/settings/:path*",
-    "/profile/:path*",
+    "/login", "/signup", "/auth/:path*", "/products", "/products/:path*",
+    "/dashboard/:path*", "/admin/:path*", "/settings/:path*", "/profile/:path*",
   ],
 };
