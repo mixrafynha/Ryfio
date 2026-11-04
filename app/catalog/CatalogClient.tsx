@@ -241,11 +241,13 @@ export default function CatalogClient({ initialProducts }: { initialProducts: Ap
             <div className="grid grid-cols-1 gap-y-14 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-3 lg:gap-x-10 lg:gap-y-14">
               {visibleProducts.map((product, index) => (
                     <motion.div key={product.id} initial={reducedMotion ? false : { opacity: 0, x: index % 2 === 0 ? -28 : 28 }} animate={{ opacity: 1, x: 0 }} transition={reducedMotion ? { duration: 0 } : { duration: 1.15, delay: Math.min(index * 0.07, 0.55), ease: [0.22, 1, 0.36, 1] }}>
-                    <Link href={`/dashboard/product/${product.id}`} className="group flex h-full flex-col transition duration-700 hover:-translate-y-2">
+                    <div className="group flex h-full flex-col transition duration-700 hover:-translate-y-2">
+                      <Link href={`/dashboard/product/${product.id}`} aria-label={`Design ${product.title}`} className="block">
                       <div className="relative mb-5 aspect-[4/5] overflow-hidden sm:aspect-[3/4] lg:mb-7">
                         <RotatingProductImage product={product} priority={index < 2} />
                       </div>
-                      <h3 className="min-h-[2.5rem] text-base font-black leading-tight text-white sm:text-base lg:text-xl">{safeText(product.title)}</h3>
+                      </Link>
+                      <h3 className="min-h-[2.5rem] text-base font-black leading-tight text-white sm:text-base lg:text-xl"><Link href={`/products/${product.id}`} className="hover:underline">{safeText(product.title)}</Link></h3>
                       <div className="mt-2 flex min-h-7 items-center justify-between gap-2">
                         <p className="text-sm font-black text-white/90 sm:text-sm lg:text-[0.95rem]">{formatPrice(product.price, product.currency)}</p>
                         <span className="text-[9px] font-black uppercase tracking-[0.12em] text-cyan-100 lg:text-[10px]">
@@ -254,9 +256,9 @@ export default function CatalogClient({ initialProducts }: { initialProducts: Ap
                       </div>
                       <ProductMeta product={product} />
                       <div className="mt-auto pt-4 text-[11px] font-black uppercase tracking-[0.16em] text-white/72 transition group-hover:text-white sm:text-[11px] lg:text-xs">
-                        Design now <span className="ml-2 text-cyan-300">↗</span>
+                        <Link href={`/dashboard/product/${product.id}`}>Design now <span className="ml-2 text-cyan-300">↗</span></Link>
                       </div>
-                    </Link>
+                    </div>
                     </motion.div>
               ))}
             </div>

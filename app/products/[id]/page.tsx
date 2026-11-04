@@ -1,103 +1,277 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { unstable_cache } from "next/cache";
+import ProductClient from "@/app/dashboard/product/[id]/ProductClient";
+import BackButton from "@/app/dashboard/product/[id]/BackButton";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { unstable_cache } from "next/cache";
 
 export const revalidate = 60;
-const siteUrl = "https://www.ryfio.com";
-const safeId = (id: string) => id.length <= 128 && /^[a-zA-Z0-9_-]+$/.test(id);
+const SITE_URL = "https://www.ryfio.com";
+const validId = (id: string) => Boolean(id) && id.length <= 128 && /^[a-zA-Z0-9_-]+$/.test(id);
 
-const getProduct = unstable_cache(async (id: string) => {
-  if (!safeId(id)) return null;
-  const { data, error } = await createSupabaseAdmin()
-    .from("products")
-    .select("id, title, description, price, currency, image, images, category")
-    .eq("id", id)
-    .eq("is_active", true)
-    .eq("status", "active")
-    .is("deleted_at", null)
-    .maybeSingle();
-  if (error) {
-    console.error("PUBLIC_PRODUCT_SSR_ERROR", { code: error.code });
-    throw new Error("Unable to load product");
+const normalize = (v: any) =>
+  String(v ?? "")
+    .trim()
+    .toLowerCase();
+
+const PRODUCT_SELECT_FIELDS = [
+  "id",
+  "title",
+  "description",
+  "price",
+  "currency",
+  "discount_price",
+  "image",
+  "images",
+  "category",
+  "slug",
+  "position",
+  "collection",
+  "is_new",
+  "is_hot",
+  "is_featured",
+  "status",
+  "rating",
+  "sales_count",
+  "audience",
+  "created_at",
+].join(", ");
+
+const COLOR_SELECT_FIELDS = [
+  "id",
+  "product_id",
+  "color",
+  "color_hex",
+  "mockup_front",
+  "mockup_back",
+  "thumbnail",
+  "position",
+].join(", ");
+
+const VARIANT_SELECT_FIELDS = [
+  "id",
+  "product_color_id",
+  "name",
+  "size",
+  "stock",
+  "price",
+  "sku",
+].join(", ");
+
+async function getProduct(supabase: ReturnType<typeof createSupabaseAdmin>, id: string) {
+  try {
+    if (!id) return null;
+
+    const productStageStartedAt = Date.now();
+    console.info("[product-perf] product_start");
+    const { data: product, error: productError } = await supabase
+      .from("products")
+      .select(PRODUCT_SELECT_FIELDS)
+      .eq("id", id)
+      .eq("is_active", true)
+      .eq("status", "active")
+      .is("deleted_at", null)
+      .maybeSingle();
+    console.info("[product-perf] product_done durationMs=" + (Date.now() - productStageStartedAt));
+
+    if (productError || !product) {
+      console.error("PRODUCT ERROR:", productError?.message ?? "Product not found");
+      return null;
+    }
+    const productRow = product as Record<string, any>;
+
+    const colorsStageStartedAt = Date.now();
+    console.info("[product-perf] colors_start");
+    const { data: colorsData, error: colorsError } = await supabase
+      .from("product_colors")
+      .select(COLOR_SELECT_FIELDS)
+      .eq("product_id", productRow.id)
+      .order("position", { ascending: true });
+    console.info(
+      "[product-perf] colors_done durationMs=" +
+        (Date.now() - colorsStageStartedAt) +
+        " rows=" +
+        (colorsData?.length ?? 0)
+    );
+
+    if (colorsError) {
+      console.error("COLORS ERROR:", colorsError.message);
+      return null;
+    }
+
+    const colors = (colorsData || []).map((color: any) => ({
+      id: color.id,
+      product_id: color.product_id,
+      color: color.color,
+      color_hex: color.color_hex || null,
+      mockup_front: color.mockup_front,
+      mockup_back: color.mockup_back,
+      thumbnail: color.thumbnail,
+      position: color.position,
+    }));
+
+    const colorIds = colors.map((color: any) => color.id);
+
+    let variants: any[] = [];
+
+    if (colorIds.length > 0) {
+      const variantsStageStartedAt = Date.now();
+      console.info("[product-perf] variants_start rows=" + colorIds.length);
+      const { data: variantsData, error: variantsError } = await supabase
+        .from("product_variants")
+        .select(VARIANT_SELECT_FIELDS)
+        .in("product_color_id", colorIds);
+      console.info(
+        "[product-perf] variants_done durationMs=" +
+          (Date.now() - variantsStageStartedAt) +
+          " rows=" +
+          (variantsData?.length ?? 0)
+      );
+
+      if (variantsError) {
+        console.error("VARIANTS ERROR:", variantsError.message);
+        return null;
+      }
+
+      const colorsById = new Map(colors.map((color: any) => [color.id, color]));
+
+      variants = (variantsData || []).map((variant: any) => {
+        const color = colorsById.get(variant.product_color_id);
+
+        return {
+          id: variant.id,
+          product_id: productRow.id,
+          product_color_id: variant.product_color_id,
+          name: variant.name ?? null,
+          size: normalize(variant.size),
+          stock: Number(variant.stock ?? 0),
+          price: variant.price != null ? Number(variant.price) : null,
+          sku: variant.sku ?? null,
+          color: color?.color || null,
+          color_hex: color?.color_hex || null,
+        };
+      });
+    }
+
+    const images = Array.isArray(productRow.images)
+      ? productRow.images.filter(Boolean)
+      : productRow.image
+      ? [productRow.image]
+      : [];
+
+    const variantPrices = variants
+      .map((variant) => variant.price)
+      .filter((price): price is number => typeof price === "number");
+
+    const price =
+      variantPrices.length > 0 ? Math.min(...variantPrices) : productRow.price;
+
+    const defaultVariant =
+      variants.find((variant) => variant.stock > 0) || variants[0] || null;
+
+    return {
+      ...productRow,
+      // Explicit properties preserve TypeScript inference when Supabase's
+      // dynamically constructed select string returns an untyped record.
+      id: String(productRow.id),
+      title: String(productRow.title ?? ""),
+      description: productRow.description as string | null,
+      image: productRow.image as string | null,
+      currency: productRow.currency as string | null,
+      images,
+      colors,
+      variants,
+      price,
+      defaultVariant,
+    };
+  } catch (err) {
+    console.error("GET PRODUCT ERROR:", err instanceof Error ? err.message : "Unknown error");
+    return null;
   }
-  return data;
-}, ["ryfio-public-product-v1"], { revalidate: 60 });
+}
 
-const summary = (text: string | null | undefined, title: string) =>
-  (text?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() ||
-    `Customize ${title} with your own design on Ryfio.`).slice(0, 155);
+
+const getPublicProduct = unstable_cache(async (id: string) => {
+  if (!validId(id)) return null;
+  return getProduct(createSupabaseAdmin(), id);
+}, ["ryfio-public-product-original-ux-v1"], { revalidate: 60 });
+
+const plainText = (value: unknown) => String(value ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+const descriptionFor = (product: Record<string, any>) =>
+  (plainText(product.description) || `Customize ${plainText(product.title)} with your own design on Ryfio.`).slice(0, 155);
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const product = await getProduct(params.id);
+  const product = await getPublicProduct(params.id);
   if (!product) return { title: "Product not found", robots: { index: false, follow: false } };
-  const description = summary(product.description, product.title);
-  const canonical = `/products/${encodeURIComponent(product.id)}`;
-  const image = typeof product.image === "string" && /^https?:\/\//.test(product.image)
-    ? product.image : undefined;
+  const url = `${SITE_URL}/products/${encodeURIComponent(product.id)}`;
+  const image = typeof product.image === "string" && /^https?:\/\//.test(product.image) ? product.image : undefined;
+  const description = descriptionFor(product);
   return {
-    title: product.title,
-    description,
-    alternates: { canonical },
-    openGraph: {
-      type: "website",
-      title: product.title,
-      description,
-      url: canonical,
-      ...(image ? { images: [{ url: image, alt: product.title }] } : {}),
-    },
+    title: plainText(product.title), description,
+    alternates: { canonical: url },
+    openGraph: { type: "website", url, title: plainText(product.title), description,
+      ...(image ? { images: [{ url: image, alt: plainText(product.title) }] } : {}) },
   };
 }
 
-export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  const product = await getProduct(params.id);
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const id = params.id;
+  const product = await getPublicProduct(id);
   if (!product) notFound();
-
-  const price = product.price == null ? null : Number(product.price);
-  const validPrice = price !== null && Number.isFinite(price) && price >= 0;
-  const currency = /^[A-Z]{3}$/.test(product.currency || "") ? product.currency : "EUR";
-  const image = typeof product.image === "string" && /^https?:\/\//.test(product.image)
-    ? product.image : undefined;
-  const productJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.title,
-    description: summary(product.description, product.title),
-    url: `${siteUrl}/products/${encodeURIComponent(product.id)}`,
+  const amount = Number(product.price);
+  const hasPrice = product.price != null && Number.isFinite(amount) && amount >= 0;
+  const currency = /^[A-Z]{3}$/.test(String(product.currency ?? "")) ? product.currency : "EUR";
+  const image = typeof product.image === "string" && /^https?:\/\//.test(product.image) ? product.image : undefined;
+  const url = `${SITE_URL}/products/${encodeURIComponent(id)}`;
+  const structuredData = {
+    "@context": "https://schema.org", "@type": "Product",
+    name: plainText(product.title), description: descriptionFor(product), url,
     ...(image ? { image: [image] } : {}),
-    ...(validPrice ? { offers: {
-      "@type": "Offer",
-      url: `${siteUrl}/products/${encodeURIComponent(product.id)}`,
-      price: price!.toFixed(2),
-      priceCurrency: currency,
-    } } : {}),
+    ...(hasPrice ? { offers: { "@type": "Offer", url, price: amount.toFixed(2), priceCurrency: currency } } : {}),
   };
   return (
-    <main className="min-h-screen overflow-hidden bg-[#03030a] text-white">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: JSON.stringify(productJsonLd).replace(/</g, "\\u003c"),
-      }} />
-      <section className="relative mx-auto flex min-h-screen max-w-4xl items-center px-4 py-14 md:px-8 lg:px-12">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(168,85,247,0.24),transparent_32%),linear-gradient(180deg,#03030a_0%,#050511_55%,#03030a_100%)]" />
-        <div className="relative w-full text-center">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-300">
-            <Sparkles size={14} />
-            Real product
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
+    <main
+      className="min-h-screen overflow-x-hidden bg-[#2a2630] text-white"
+    >
+      <section className="relative min-h-screen bg-transparent">
+        {/* HEADER COM A MESMA UX DO NAVBAR, MAS SEM FUNDO DIFERENTE */}
+        <header className="sticky top-0 z-50 border-b border-white/10 bg-[#2a2630]/95">
+          <div className="relative mx-auto flex max-w-7xl items-center justify-start px-3 py-3 sm:px-5 md:justify-between md:px-6 lg:max-w-none lg:px-12 xl:px-16">
+            <Link
+              href="/"
+              className="group overflow-visible select-none shrink-0 text-white transition active:scale-[0.98] md:hover:opacity-90"
+              aria-label="RYFIO home"
+            >
+              <div className="relative flex items-center">
+                <span
+                  className="text-[27px] md:text-[40px] uppercase leading-none tracking-[-0.03em] select-none transition-opacity duration-200 group-hover:opacity-90"
+                  style={{
+                    fontFamily: "var(--font-logo)",
+                    textShadow: "0 0 18px rgba(102, 67, 136, 0.35)",
+                  }}
+                >
+                  <span className="ryfio-letter text-white" style={{ animationDelay: "0ms" }}>R</span>
+                  <span className="ryfio-letter text-white" style={{ animationDelay: "120ms" }}>Y</span>
+                  <span className="ryfio-letter bg-gradient-to-r from-fuchsia-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent" style={{ animationDelay: "240ms" }}>F</span>
+                  <span className="ryfio-letter bg-gradient-to-r from-fuchsia-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent" style={{ animationDelay: "360ms" }}>I</span>
+                  <span className="ryfio-letter bg-gradient-to-r from-fuchsia-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent" style={{ animationDelay: "480ms" }}>O</span>
+                </span>
+              </div>
+            </Link>
+
+            <BackButton />
           </div>
-          <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-black tracking-[-0.06em] sm:text-6xl">
-            {product.title}
-          </h1>
-          <Link
-            href={`/dashboard/product/${product.id}`}
-            className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-600 to-fuchsia-500 px-6 py-4 font-black text-white shadow-[0_0_34px_rgba(168,85,247,0.34)] transition hover:scale-[1.02]"
-          >
-            Design now
-            <ArrowRight size={17} />
-          </Link>
+        </header>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-[3px] pb-5 pt-3 sm:px-4 md:px-6 lg:max-w-none lg:px-12 xl:px-16">
+          <ProductClient product={product} images={product.images} id={id} />
+
         </div>
       </section>
     </main>
+    </>
   );
 }
