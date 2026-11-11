@@ -1,28 +1,6 @@
 import "./globals.css";
 import Providers from "./providers";
 import type { Metadata, Viewport } from "next";
-import { Manrope, Inter, Audiowide } from "next/font/google";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-manrope",
-  weight: ["400", "600", "700"],
-});
-
-const audiowide = Audiowide({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-logo",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-  weight: ["400", "600"],
-});
-
 const siteUrl = "https://www.ryfio.com";
 const siteName = "Ryfio";
 const defaultTitle = "Personalized Gifts & Custom Clothing | Ryfio";
@@ -137,11 +115,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${inter.variable} ${audiowide.variable} w-full h-full`}
+      className="w-full h-full"
     >
       <body
         className={`
-          ${manrope.className}
           w-full min-h-screen m-0 p-0 bg-white text-gray-900
           antialiased leading-relaxed tracking-tight
           flex flex-col

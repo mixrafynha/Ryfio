@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+:root {
+  --font-manrope: "Manrope", "Segoe UI", Arial, sans-serif;
+  --font-inter: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-logo: "Audiowide", "Arial Black", Impact, sans-serif;
+}
+
 html,
 body {
   margin: 0;
