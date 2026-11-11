@@ -25,9 +25,9 @@ const inter = Inter({
 
 const siteUrl = "https://www.ryfio.com";
 const siteName = "Ryfio";
-const defaultTitle = "Ryfio — Create & Sell Custom Products";
+const defaultTitle = "Personalized Gifts & Custom Clothing | Ryfio";
 const defaultDescription =
-  "Create custom products with our online design editor and sell worldwide using print-on-demand fulfillment.";
+  "Create personalized t-shirts, hoodies, mugs and gifts with your photos, text or AI-generated designs. Design something unique with Ryfio.";
 
 export const viewport: Viewport = {
   themeColor: "#03030a",

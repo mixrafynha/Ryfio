@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Custom Products to Sell | RYFIO Product Catalogue",
+  title: "Design Your Own T-Shirts & Hoodies",
   description:
-    "Explore premium blank t-shirts, hoodies, sweatshirts, bags and accessories. Create custom products with RYFIO and start selling your designs online.",
+    "Explore customizable t-shirts, hoodies and clothing. Add your artwork, text or AI-generated designs and create something uniquely yours.",
   keywords: [
     "custom products",
     "print on demand products",

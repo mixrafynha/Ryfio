@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { memo } from "react";
+import type { Metadata } from "next";
 import {
   ArrowUpRight,
   Headphones,
@@ -9,7 +10,12 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react";
-import TestimonialRotator from "./components/TestimonialRotator";
+
+export const metadata: Metadata = {
+  title: "Personalized Gifts & Custom Clothing",
+  description: "Create personalized t-shirts, hoodies, mugs and gifts with your photos, text or AI-generated designs. Design something unique with Ryfio.",
+  alternates: { canonical: "https://www.ryfio.com/" },
+};
 
 const CREATE_HREF = "/dashboard/create";
 const CATALOG_HREF = "/catalog";
@@ -336,12 +342,12 @@ export default function HomePage() {
         className="relative mb-[48px] font-[var(--font-logo)] text-[28px] font-normal uppercase leading-[1.02] tracking-[-0.025em] sm:mb-[74px] sm:text-[39px] sm:leading-[0.98] md:text-[45px] lg:-top-[27px] lg:-translate-x-[10%] lg:translate-y-[20%] lg:whitespace-nowrap lg:text-[48px] xl:text-[50px]"
         style={{ fontFamily: "var(--font-logo)", textShadow: "0 0 14px rgba(102,67,136,.28)" }}
       >
-        <span className="text-white">Turn any idea into a </span>
-        <span className="mt-1 block bg-gradient-to-r from-fuchsia-400 via-purple-500 to-cyan-400 bg-clip-text text-center text-transparent sm:mt-0 sm:inline">real product.</span>
+        <span className="text-white">Make it personal. </span>
+        <span className="mt-1 block bg-gradient-to-r from-fuchsia-400 via-purple-500 to-cyan-400 bg-clip-text text-center text-transparent sm:mt-0 sm:inline">Make it yours.</span>
       </h1>
 
       <p className="mx-auto max-w-2xl text-base font-medium leading-relaxed text-white/70 sm:text-xl md:text-2xl lg:mx-0 lg:mb-8 lg:translate-x-0 lg:whitespace-nowrap">
-        Write your idea and AI will create a beautiful design — no design skills needed.
+        Create personalized clothing and gifts with your photos, text or AI-generated designs.
       </p>
 
       {/* DESKTOP CTA */}
@@ -351,17 +357,16 @@ export default function HomePage() {
             href={safeHref(CATALOG_HREF)}
             className="hero-cta group relative inline-flex items-center justify-center gap-4 overflow-visible rounded-lg px-[3.25rem] py-[1.5rem] text-[1.375rem] font-black text-white shadow-[0_12px_35px_rgba(34,211,238,0.25)] transition duration-300 hover:-translate-y-1 active:translate-y-0"
           >
-            Start creating
+            Customize Your Product
             <Zap size={20} aria-hidden="true" className="transition-transform duration-300 group-hover:rotate-12" />
           </Link>
           <div className="flex items-center gap-2 pl-1 text-xs font-bold text-white/75">
-            <span className="tracking-[0.12em] text-amber-300">★★★★★</span>
-            <span>5/5 from creators</span>
+            <span>Personalize before you order</span>
           </div>
         </div>
 
-        <div className="w-[380px] overflow-hidden rounded-2xl border border-white/15 bg-white/[0.08] px-5 py-4 shadow-[0_8px_26px_rgba(0,0,0,0.2)] backdrop-blur-xl lg:-translate-y-[10px] lg:translate-x-[calc(20%_+_20px)]">
-          <TestimonialRotator />
+        <div className="w-[380px] rounded-2xl border border-white/15 bg-white/[0.08] px-5 py-4 shadow-[0_8px_26px_rgba(0,0,0,0.2)] backdrop-blur-xl lg:-translate-y-[10px] lg:translate-x-[calc(20%_+_20px)]">
+          <p className="text-sm font-bold leading-6 text-white/80">Preview your personalized design, choose your product options, and continue to the editor when you’re ready.</p>
         </div>
       </div>
     </div>
@@ -394,7 +399,7 @@ export default function HomePage() {
     className="group flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-500 to-cyan-500 px-5 text-sm font-semibold text-white shadow-[0_8px_30px_rgba(168,85,247,0.25)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
   >
     <Zap size={15} aria-hidden="true" />
-    Start creating
+    Customize Your Product
   </Link>
 </div>
 

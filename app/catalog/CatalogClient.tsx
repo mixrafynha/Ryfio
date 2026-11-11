@@ -176,12 +176,12 @@ export default function CatalogClient({ initialProducts }: { initialProducts: Ap
       <section className="relative overflow-hidden px-4 py-10 md:px-8 lg:px-16 lg:py-14">
         <div className="relative mx-auto max-w-[1600px] py-4 lg:py-8">
           <h1 className="mx-auto max-w-[22rem] whitespace-normal font-[var(--font-logo)] text-center text-[32px] font-normal uppercase leading-[0.94] tracking-[-0.045em] sm:max-w-none sm:whitespace-nowrap sm:text-5xl md:text-[61px]" style={{ fontFamily: "var(--font-logo)" }}>
-            <span className="text-white">Custom apparel </span>
-            <span className="bg-gradient-to-r from-fuchsia-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">& clothing</span>
+            <span className="text-white">Design Your Own </span>
+            <span className="bg-gradient-to-r from-fuchsia-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">Custom Clothing</span>
           </h1>
 
           <p className="mx-auto mt-4 max-w-[22rem] whitespace-normal text-center text-base font-semibold leading-relaxed text-white/82 sm:mt-7 sm:max-w-none sm:whitespace-nowrap sm:text-base md:-translate-y-[10px] md:text-xl">
-            Shop T-shirts, hoodies and sweatshirts ready to customize with your own designs, artwork or AI-generated graphics.
+            Choose customizable t-shirts, hoodies and clothing, then add your artwork, text or AI-generated design.
           </p>
         </div>
       </section>
@@ -242,7 +242,7 @@ export default function CatalogClient({ initialProducts }: { initialProducts: Ap
               {visibleProducts.map((product, index) => (
                     <motion.div key={product.id} initial={reducedMotion ? false : { opacity: 0, x: index % 2 === 0 ? -28 : 28 }} animate={{ opacity: 1, x: 0 }} transition={reducedMotion ? { duration: 0 } : { duration: 1.15, delay: Math.min(index * 0.07, 0.55), ease: [0.22, 1, 0.36, 1] }}>
                     <div className="group flex h-full flex-col transition duration-700 hover:-translate-y-2">
-                      <Link href={`/dashboard/product/${product.id}`} aria-label={`Design ${product.title}`} className="block">
+                      <Link href={`/products/${encodeURIComponent(product.id)}`} aria-label={`View and customize ${product.title}`} className="block">
                       <div className="relative mb-5 aspect-[4/5] overflow-hidden sm:aspect-[3/4] lg:mb-7">
                         <RotatingProductImage product={product} priority={index < 2} />
                       </div>
@@ -256,7 +256,7 @@ export default function CatalogClient({ initialProducts }: { initialProducts: Ap
                       </div>
                       <ProductMeta product={product} />
                       <div className="mt-auto pt-4 text-[11px] font-black uppercase tracking-[0.16em] text-white/72 transition group-hover:text-white sm:text-[11px] lg:text-xs">
-                        <Link href={`/dashboard/product/${product.id}`}>Design now <span className="ml-2 text-cyan-300">↗</span></Link>
+                        <Link href={`/products/${encodeURIComponent(product.id)}`}>Customize now <span className="ml-2 text-cyan-300">↗</span></Link>
                       </div>
                     </div>
                     </motion.div>

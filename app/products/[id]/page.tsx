@@ -205,7 +205,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   const product = await getPublicProduct(params.id);
   if (!product) return { title: "Product not found", robots: { index: false, follow: false } };
   const url = `${SITE_URL}/products/${encodeURIComponent(product.id)}`;
-  const image = typeof product.image === "string" && /^https?:\/\//.test(product.image) ? product.image : undefined;
+  const image = typeof product.image === "string" && product.image.trim() ? new URL(product.image, SITE_URL).toString() : undefined;
   const description = descriptionFor(product);
   return {
     title: plainText(product.title), description,
@@ -222,7 +222,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
   const amount = Number(product.price);
   const hasPrice = product.price != null && Number.isFinite(amount) && amount >= 0;
   const currency = /^[A-Z]{3}$/.test(String(product.currency ?? "")) ? product.currency : "EUR";
-  const image = typeof product.image === "string" && /^https?:\/\//.test(product.image) ? product.image : undefined;
+  const image = typeof product.image === "string" && product.image.trim() ? new URL(product.image, SITE_URL).toString() : undefined;
   const url = `${SITE_URL}/products/${encodeURIComponent(id)}`;
   const structuredData = {
     "@context": "https://schema.org", "@type": "Product",

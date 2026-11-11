@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight, CheckCircle2, Sparkles, Wand2, Zap } from "lucide-react";
 
-const SITE_URL = "https://ryfio.com";
+const SITE_URL = "https://www.ryfio.com";
 
 export type ProductLanding = {
   slug: string;
