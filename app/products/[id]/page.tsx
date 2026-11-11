@@ -210,8 +210,25 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   return {
     title: plainText(product.title), description,
     alternates: { canonical: url },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
     openGraph: { type: "website", url, title: plainText(product.title), description,
       ...(image ? { images: [{ url: image, alt: plainText(product.title) }] } : {}) },
+    twitter: {
+      card: "summary_large_image",
+      title: plainText(product.title),
+      description,
+      ...(image ? { images: [image] } : {}),
+    },
   };
 }
 
@@ -224,11 +241,32 @@ export default async function ProductPage({ params }: { params: { id: string } }
   const currency = /^[A-Z]{3}$/.test(String(product.currency ?? "")) ? product.currency : "EUR";
   const image = typeof product.image === "string" && /^https?:\/\//.test(product.image) ? product.image : undefined;
   const url = `${SITE_URL}/products/${encodeURIComponent(id)}`;
+  const productImages = product.images
+    .filter((candidate: unknown): candidate is string => typeof candidate === "string" && candidate.trim().length > 0)
+    .map((candidate: string) => new URL(candidate, SITE_URL).toString());
+  const hasKnownStock = Boolean(product.defaultVariant);
+  const isInStock = hasKnownStock && Number(product.defaultVariant?.stock) > 0;
   const structuredData = {
     "@context": "https://schema.org", "@type": "Product",
     name: plainText(product.title), description: descriptionFor(product), url,
-    ...(image ? { image: [image] } : {}),
-    ...(hasPrice ? { offers: { "@type": "Offer", url, price: amount.toFixed(2), priceCurrency: currency } } : {}),
+    ...(productImages.length > 0 ? { image: productImages } : image ? { image: [image] } : {}),
+    ...(hasPrice ? {
+      offers: {
+        "@type": "Offer",
+        url,
+        price: amount.toFixed(2),
+        priceCurrency: currency,
+        ...(hasKnownStock ? { availability: `https://schema.org/${isInStock ? "InStock" : "OutOfStock"}` } : {}),
+      },
+    } : {}),
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Catalog", item: `${SITE_URL}/catalog` },
+        { "@type": "ListItem", position: 3, name: plainText(product.title), item: url },
+      ],
+    },
   };
   return (
     <>
