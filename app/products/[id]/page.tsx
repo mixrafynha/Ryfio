@@ -244,8 +244,6 @@ export default async function ProductPage({ params }: { params: { id: string } }
   const productImages = product.images
     .filter((candidate: unknown): candidate is string => typeof candidate === "string" && candidate.trim().length > 0)
     .map((candidate: string) => new URL(candidate, SITE_URL).toString());
-  const hasKnownStock = Boolean(product.defaultVariant);
-  const isInStock = hasKnownStock && Number(product.defaultVariant?.stock) > 0;
   const structuredData = {
     "@context": "https://schema.org", "@type": "Product",
     name: plainText(product.title), description: descriptionFor(product), url,
@@ -256,7 +254,6 @@ export default async function ProductPage({ params }: { params: { id: string } }
         url,
         price: amount.toFixed(2),
         priceCurrency: currency,
-        ...(hasKnownStock ? { availability: `https://schema.org/${isInStock ? "InStock" : "OutOfStock"}` } : {}),
       },
     } : {}),
     breadcrumb: {

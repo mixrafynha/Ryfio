@@ -90,8 +90,13 @@ export function ArticlePage({ post }: { post: BlogPost }) {
     headline: post.title,
     description: post.excerpt,
     author: { "@type": "Organization", name: "Ryfio" },
-    publisher: { "@type": "Organization", name: "Ryfio", logo: { "@type": "ImageObject", url: "https://ryfio.com/favicon.ico" } },
-    mainEntityOfPage: `https://ryfio.com/blog/${post.slug}`,
+    publisher: {
+      "@type": "Organization",
+      name: "Ryfio",
+      url: "https://www.ryfio.com",
+      logo: { "@type": "ImageObject", url: "https://www.ryfio.com/favicon.ico" },
+    },
+    mainEntityOfPage: `https://www.ryfio.com/blog/${post.slug}`,
   };
 
   return (
