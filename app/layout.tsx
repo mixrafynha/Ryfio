@@ -1,26 +1,30 @@
 import "./globals.css";
 import Providers from "./providers";
 import type { Metadata, Viewport } from "next";
-import { Manrope, Inter, Audiowide } from "next/font/google";
+import localFont from "next/font/local";
 
-const manrope = Manrope({
-  subsets: ["latin"],
+const manrope = localFont({
+  src: [
+    { path: "./fonts/manrope-400.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/manrope-600.ttf", weight: "600", style: "normal" },
+    { path: "./fonts/manrope-700.ttf", weight: "700", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-manrope",
-  weight: ["400", "600", "700"],
 });
 
-const audiowide = Audiowide({
-  subsets: ["latin"],
-  weight: "400",
+const audiowide = localFont({
+  src: [{ path: "./fonts/audiowide-400.ttf", weight: "400", style: "normal" }],
   variable: "--font-logo",
 });
 
-const inter = Inter({
-  subsets: ["latin"],
+const inter = localFont({
+  src: [
+    { path: "./fonts/inter-400.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/inter-600.ttf", weight: "600", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-inter",
-  weight: ["400", "600"],
 });
 
 const siteUrl = "https://www.ryfio.com";
