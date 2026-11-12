@@ -1,21 +1,26 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Custom Products to Sell | RYFIO Product Catalogue",
+  title: "Shop Personalized Products & Custom Gifts | Ryfio",
   description:
-    "Explore premium blank t-shirts, hoodies, sweatshirts, bags and accessories. Create custom products with RYFIO and start selling your designs online.",
+    "Shop customizable t-shirts, hoodies, sweatshirts, bags and accessories. Personalize products with your own design, photos or text using Ryfio.",
   keywords: [
+    "personalized products",
+    "personalized gifts",
     "custom products",
-    "print on demand products",
-    "blank t-shirts",
+    "custom gifts",
+    "personalized t-shirts",
     "custom hoodies",
+    "custom mugs",
+    "custom tote bags",
     "custom clothing",
-    "RYFIO catalogue",
+    "print on demand products",
+    "Ryfio catalog",
   ],
   openGraph: {
-    title: "Create Custom Products That Sell | RYFIO",
+    title: "Shop Personalized Products & Custom Gifts | Ryfio",
     description:
-      "Choose premium blank products, customise your design and launch your next product with RYFIO.",
+      "Choose a customizable product and make it yours with your own design, photos or text using Ryfio.",
     type: "website",
     url: "/catalog",
   },

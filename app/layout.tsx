@@ -25,9 +25,9 @@ const inter = Inter({
 
 const siteUrl = "https://www.ryfio.com";
 const siteName = "Ryfio";
-const defaultTitle = "Ryfio — Create & Sell Custom Products";
+const defaultTitle = "Personalized Gifts & Custom Products | Ryfio";
 const defaultDescription =
-  "Create custom products with our online design editor and sell worldwide using print-on-demand fulfillment.";
+  "Shop personalized t-shirts, hoodies, mugs and gifts made with your photos, text or AI-generated designs. Create something uniquely yours with Ryfio.";
 
 export const viewport: Viewport = {
   themeColor: "#03030a",
@@ -44,16 +44,17 @@ export const metadata: Metadata = {
   description: defaultDescription,
 
   keywords: [
-    "print on demand",
+    "personalized gifts",
+    "custom gifts",
+    "personalized products",
     "custom products",
+    "custom clothing",
     "custom apparel",
-    "t-shirt design",
-    "hoodie design",
-    "product designer",
-    "ecommerce",
-    "dropshipping",
-    "online store",
-    "print provider",
+    "personalized t-shirts",
+    "custom hoodies",
+    "custom mugs",
+    "print on demand",
+    "AI product design",
     "Ryfio",
   ],
 
