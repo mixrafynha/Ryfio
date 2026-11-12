@@ -198,17 +198,81 @@ const getPublicProduct = unstable_cache(async (id: string) => {
 }, ["ryfio-public-product-original-ux-v1"], { revalidate: 60 });
 
 const plainText = (value: unknown) => String(value ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-const descriptionFor = (product: Record<string, any>) =>
-  (plainText(product.description) || `Customize ${plainText(product.title)} with your own design on Ryfio.`).slice(0, 155);
+type ProductSeoData = { title?: unknown; description?: unknown; category?: unknown };
+const TITLE_SUFFIX = " | Ryfio";
+
+const trimAtWordBoundary = (value: string, maxLength = 155) => {
+  if (value.length <= maxLength) return value;
+  const trimmed = value.slice(0, maxLength + 1).replace(/\s+\S*$/, "").trim();
+  return trimmed || value.slice(0, maxLength).trim();
+};
+
+const titleFor = (product: ProductSeoData) => {
+  const title = plainText(product.title);
+  const personalizationEvidence = `${title} ${plainText(product.description)} ${plainText(product.category)}`;
+  const hasPersonalizationEvidence = /\b(custom|personalized|personalised|customizable|customisable|personalize|personalise)\b/i.test(
+    personalizationEvidence,
+  );
+  const titleAlreadySignalsPersonalization = /\b(custom|personalized|personalised|customizable|customisable)\b/i.test(title);
+  const personalizedTitle = `Personalized ${title}`;
+
+  return !title || !hasPersonalizationEvidence || titleAlreadySignalsPersonalization || personalizedTitle.length + TITLE_SUFFIX.length > 60
+    ? title
+    : personalizedTitle;
+};
+
+const semanticWords = (value: string) =>
+  value
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word) => word.replace(/[^a-z0-9]/g, "").replace(/s$/, ""))
+    .filter((word) => word.length > 2);
+
+const categoryRepeatsProductType = (title: string, category: string) => {
+  const titleWords = semanticWords(title);
+  return semanticWords(category).some((categoryWord) =>
+    titleWords.some((titleWord) => titleWord === categoryWord || titleWord.startsWith(categoryWord) || categoryWord.startsWith(titleWord)),
+  );
+};
+
+const descriptionFor = (product: ProductSeoData) => {
+  const title = plainText(product.title);
+  const category = plainText(product.category);
+  const existingDescription = plainText(product.description);
+
+  if (existingDescription.length >= 50) {
+    return trimAtWordBoundary(existingDescription);
+  }
+
+  const categoryPhrase = category && !categoryRepeatsProductType(title, category)
+    ? ` ${category}`
+    : "";
+  return trimAtWordBoundary(
+    `Discover the ${title || "product"}${categoryPhrase} from Ryfio.`,
+  );
+};
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const product = await getPublicProduct(params.id);
   if (!product) return { title: "Product not found", robots: { index: false, follow: false } };
   const url = `${SITE_URL}/products/${encodeURIComponent(product.id)}`;
-  const image = typeof product.image === "string" && /^https?:\/\//.test(product.image) ? product.image : undefined;
+  const imageCandidates = [product.image, ...(Array.isArray(product.images) ? product.images : [])];
+  const image = imageCandidates
+    .map((candidate) => {
+      if (typeof candidate !== "string") return undefined;
+      const normalized = candidate.trim();
+      try {
+        const parsed = new URL(normalized);
+        return parsed.protocol === "http:" || parsed.protocol === "https:" ? parsed.toString() : undefined;
+      } catch {
+        return undefined;
+      }
+    })
+    .find((candidate): candidate is string => Boolean(candidate));
+  const seoTitle = titleFor(product);
   const description = descriptionFor(product);
   return {
-    title: plainText(product.title), description,
+    title: seoTitle, description,
     alternates: { canonical: url },
     robots: {
       index: true,
@@ -221,11 +285,11 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
         "max-video-preview": -1,
       },
     },
-    openGraph: { type: "website", url, title: plainText(product.title), description,
+    openGraph: { type: "website", url, title: seoTitle, description,
       ...(image ? { images: [{ url: image, alt: plainText(product.title) }] } : {}) },
     twitter: {
       card: "summary_large_image",
-      title: plainText(product.title),
+      title: seoTitle,
       description,
       ...(image ? { images: [image] } : {}),
     },
